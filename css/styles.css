@@ -1,0 +1,707 @@
+:root {
+    /* Grid Settings */
+    --grid-size: 15;
+    --cell-size-desktop: 40px;
+    --cell-size-tablet: 30px;
+    --cell-size-mobile: 28px;
+    --gap: 1px;
+    --padding: 15px;
+    --padding-mobile: 8px;
+    
+    /* Colors - Galician Theme */
+    --color-primary: #636B46;      /* Verde principal */
+    --color-accent: #CDA34F;       /* Dourado acento */
+    --color-background: #E9E7DA;   /* Crema fondo */
+    --color-surface: #ffffff;      /* Branco superficie */
+    --color-text-primary: #444444; /* Texto principal */
+    --color-text-dark: #161616;   /* Texto escuro */
+    --color-text-secondary: #333;  /* Texto secundario */
+    --color-text-muted: #666;     /* Texto apagado */
+    
+    /* Interactive Colors */
+    --color-border-light: #ddd;
+    --color-border-medium: #ccc;
+    --color-surface-light: #f8f8f8;
+    --color-surface-medium: #f9f9f9;
+    --color-surface-alt: #f0f0f0;
+    --color-surface-hover: #f8f9fa;
+    --color-disabled: #e8e8e8;
+    --color-button-secondary: #ddd;
+    --color-button-secondary-hover: #bbb;
+    
+    /* Font Sizes */
+    --font-size-large: 2rem;
+    --font-size-medium: 1.6rem;
+    --font-size-normal: 1.1rem;
+    --font-size-small: 0.9rem;
+    --font-size-tiny: 0.8rem;
+    
+    /* Spacing */
+    --border-radius: 15px;
+    --border-radius-medium: 8px;
+    --border-radius-small: 5px;
+    --border-radius-large: 25px;
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-family: 'Merriweather', serif;
+    font-size: var(--font-size-large);
+    color: var(--color-text-dark);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.logo h1 {
+    font-size: var(--font-size-medium) !important;
+    margin: 0 !important;
+    font-weight: 700 !important;
+}
+
+.subtitle {
+    color: var(--color-primary);
+    font-size: var(--font-size-normal);
+    margin-bottom: 20px;
+}
+
+.game-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.nivel-info {
+    background: var(--color-accent);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius-large);
+    font-weight: 600;
+}
+
+.puntuacion {
+    background: var(--color-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius-large);
+    font-weight: 600;
+}
+
+.timer {
+    background: var(--color-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius-large);
+    font-weight: 600;
+    font-family: monospace;
+    transition: background-color 0.3s ease;
+}
+
+.game-board {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+/* CROSSWORD GRID - Desktop */
+.grid-container {
+    display: grid;
+    gap: var(--gap);
+    background: #f8f8f8;
+    padding: var(--padding);
+    border-radius: var(--border-radius-medium);
+    border: 2px solid var(--color-border-light);
+    justify-self: center;
+    width: max-content;
+    margin: 0 auto;
+}
+
+.grid-cell {
+    background: white;
+    border: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    text-transform: uppercase;
+    width: var(--cell-size-desktop);
+    height: var(--cell-size-desktop);
+}
+
+.grid-cell.blocked {
+    background: #e8e8e8;
+    cursor: default;
+    border-color: #ccc;
+}
+
+.grid-cell.active {
+    background: var(--color-accent);
+    color: white;
+    border-color: #636B46;
+}
+
+.grid-cell.completed {
+    background: var(--color-primary);
+    color: white;
+}
+
+.grid-cell.highlight {
+    background: #E9E7DA;
+    border-color: #CDA34F;
+}
+
+.grid-cell .cell-number {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--color-text-muted);
+}
+
+/* CLUES PANEL */
+.clues-panel {
+    flex: 1;
+    max-width: 400px;
+    min-width: 300px;
+}
+
+.clues-title {
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    font-family: 'Merriweather', serif;
+    font-size: 1.3rem;
+}
+
+.clues-sections {
+    margin-bottom: 20px;
+}
+
+.horizontal-clues, .vertical-clues {
+    margin-bottom: 20px;
+}
+
+.horizontal-clues h4, .vertical-clues h4 {
+    color: var(--color-accent);
+    margin-bottom: 10px;
+    font-size: var(--font-size-normal);
+}
+
+.clue-list {
+    list-style: none;
+    padding: 0;
+}
+
+.clue-item {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background: var(--color-surface-medium);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.clue-item:hover {
+    background: #E9E7DA;
+    border-left-color: #CDA34F;
+}
+
+.clue-item.active {
+    background: var(--color-accent);
+    color: white;
+    border-left-color: #636B46;
+}
+
+.clue-item.completed {
+    background: var(--color-primary);
+    color: white;
+    border-left-color: #636B46;
+}
+
+.clue-number {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.progress {
+    background: var(--color-surface-alt);
+    padding: 15px;
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.mobile-help {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--color-text-muted);
+    display: none;
+    font-size: 0.9em;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #CDA34F;
+}
+
+@media (max-width: 768px) {
+    .mobile-help {
+        display: block;
+    }
+}
+
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-control {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius-medium);
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-control:hover {
+    background: var(--color-accent);
+    transform: translateY(-2px);
+}
+
+/* CTA BANNER */
+.cta-banner {
+    background: linear-gradient(135deg, #636B46 0%, #CDA34F 100%);
+    margin: 40px auto 20px;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    max-width: 1200px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.cta-content {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    color: white;
+}
+
+.cta-logo {
+    max-height: 60px;
+    width: auto;
+}
+
+.cta-text {
+    flex: 1;
+}
+
+.cta-text h3 {
+    font-family: 'Merriweather', serif;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.cta-text p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.cta-button {
+    background: white;
+    color: var(--color-primary);
+    padding: 15px 25px;
+    border-radius: var(--border-radius-medium);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* MODALS */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 {
+    color: var(--color-primary);
+    margin-bottom: 20px;
+    font-family: 'Merriweather', serif;
+    text-align: center;
+}
+
+.level-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-level {
+    padding: 15px 20px;
+    border: 2px solid #636B46;
+    background: white;
+    color: var(--color-primary);
+    border-radius: var(--border-radius-medium);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-level:hover, .btn-level.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-close {
+    width: 100%;
+    padding: 12px;
+    background: var(--color-button-secondary);
+    border: none;
+    border-radius: var(--border-radius-medium);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    background: var(--color-button-secondary-hover);
+}
+
+/* SCORE MODAL */
+#nameInput {
+    margin-top: 20px;
+}
+
+#nameInput label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+#nameInput input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--color-border-light);
+    border-radius: var(--border-radius-medium);
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: var(--border-radius-medium);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-accent);
+}
+
+.btn-secondary {
+    background: var(--color-button-secondary);
+    color: var(--color-text-muted);
+}
+
+.btn-secondary:hover {
+    background: var(--color-button-secondary-hover);
+}
+
+/* RANKING MODAL */
+.ranking-modal {
+    max-width: 600px;
+}
+
+.ranking-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 5px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: var(--color-surface-alt);
+    cursor: pointer;
+    border-radius: var(--border-radius-small);
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active, .tab-btn:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.ranking-list {
+    list-style: none;
+    padding: 0;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: var(--color-surface-medium);
+    border-radius: var(--border-radius-medium);
+    gap: 15px;
+}
+
+.ranking-item.top-3 {
+    background: linear-gradient(135deg, #CDA34F 0%, #636B46 100%);
+    color: white;
+}
+
+.ranking-position {
+    font-weight: bold;
+    font-size: 1.2rem;
+    min-width: 30px;
+}
+
+.ranking-info {
+    flex: 1;
+}
+
+.ranking-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.ranking-details {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.ranking-score {
+    font-weight: bold;
+    font-size: var(--font-size-normal);
+}
+
+.ranking-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--color-surface-alt);
+    border-radius: var(--border-radius-medium);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+/* RESPONSIVE - TABLET */
+@media (max-width: 768px) {
+    .grid-cell {
+        width: var(--cell-size-tablet);
+        height: var(--cell-size-tablet);
+        font-size: 15px;
+    }
+    
+    .grid-cell .cell-number {
+        font-size: 9px;
+    }
+    
+    .grid-container {
+        padding: 10px;
+    }
+    
+    .game-board {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .clues-panel {
+        max-width: 100%;
+    }
+    
+    .clues-sections {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .horizontal-clues, .vertical-clues {
+        flex: 1;
+    }
+    
+    .nivel-info, .puntuacion, .timer {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .cta-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+}
+
+/* RESPONSIVE - MOBILE */
+@media (max-width: 480px) {
+    .grid-cell {
+        width: var(--cell-size-mobile);
+        height: var(--cell-size-mobile);
+        font-size: 14px;
+    }
+    
+    .grid-cell .cell-number {
+        font-size: 8px;
+        top: 1px;
+        left: 2px;
+    }
+    
+    .grid-container {
+        padding: var(--padding-mobile);
+    }
+    
+    body {
+        padding: 8px;
+    }
+    
+    .game-container {
+        padding: 12px;
+    }
+    
+    .logo {
+        font-size: 1.4rem;
+    }
+    
+    .game-header {
+        justify-content: center;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .nivel-info, .puntuacion, .timer {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .clues-sections {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .btn-control {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+.loading, .no-data {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text-muted);
+    font-style: italic;
+}

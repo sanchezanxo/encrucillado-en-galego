@@ -1,0 +1,64 @@
+# Arquivos sensibles que NON deben subirse a GitHub
+
+# Configuración de seguridade
+private/config.php
+private/rate_limit.json
+private/scores.json
+
+# Logs e arquivos temporais
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# XAMPP específicos
+.htaccess.backup
+error.log
+access.log
+
+# Arquivos de backup
+*.backup
+*.bak
+*~
+
+# Node modules se os houbese
+node_modules/
+package-lock.json
+
+# Variables de entorno
+.env
+.env.local
+
+# Arquivos de configuración local
+config.local.php
+settings.local.json
+
+# Cartabones de cache
+*.cache
+
+# Configuracións locais de PHP/XAMPP
+php.ini
+xampp-control.ini
+
+# Copias de bases de datos exportadas
+*.sql
+*.sql.gz
+*.dump
+
+# Wordpress (se o proxecto ten WP)
+wp-config.php
+wp-content/uploads/
+
+# Composer (se o usas para dependencias PHP)
+vendor/
+composer.lock
+
+# Arquivos de Claude
+CLAUDE.md
+.claude/

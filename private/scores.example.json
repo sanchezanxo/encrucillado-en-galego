@@ -1,0 +1,15 @@
+{
+  "scores": [
+    {
+      "id": 1,
+      "name": "Xogador Exemplo",
+      "email": "",
+      "level": 1,
+      "score": 450,
+      "found_words": 6,
+      "total_words": 6,
+      "timestamp": "2025-01-01T10:00:00+00:00"
+    }
+  ],
+  "next_id": 2
+}

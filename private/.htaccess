@@ -1,0 +1,50 @@
+# Protección de arquivos sensibles do admin panel
+# Denegar acceso directo aos arquivos de configuración e datos
+
+# Protexer arquivos de configuración
+<Files "config.php">
+    Deny from all
+</Files>
+
+# Protexer arquivos de datos JSON
+<Files "*.json">
+    Deny from all
+</Files>
+
+# Permitir só arquivos PHP necesarios
+<Files "admin.php">
+    Allow from all
+</Files>
+
+<Files "save_lead.php">
+    Allow from all
+</Files>
+
+<Files "get_stats.php">
+    Allow from all
+</Files>
+
+# Esta regra xa non se aplica porque declaramos os específicos arriba
+
+# Headers de seguridade
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options SAMEORIGIN
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Desactivar listado de directorios
+Options -Indexes
+
+# Protexer contra ataques comúns
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Bloquear requests con query strings sospechosas
+    RewriteCond %{QUERY_STRING} (eval\(|base64_decode|script>|<script) [NC]
+    RewriteRule .* - [F]
+    
+    # Bloquear user agents sospechosos
+    RewriteCond %{HTTP_USER_AGENT} (sqlmap|nikto|curl|wget) [NC]
+    RewriteRule .* - [F]
+</IfModule>

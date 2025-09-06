@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="gl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrucillado en Galego - CURSOS.GAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><h1>Encrucillado en galego</h1></div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="nivel-info" id="nivel-info">Nivel 1</div>
+            <div class="puntuacion">Puntuación: <span id="score">0</span></div>
+            <div class="timer" id="timer" style="display: none;">Tempo: <span id="timeDisplay">--:--</span></div>
+        </div>
+
+        <div class="game-board">
+            <div class="grid-container" id="gameGrid">
+                <!-- Crossword grid will be generated here -->
+            </div>
+
+            <div class="clues-panel">
+                <h3 class="clues-title">Pistas:</h3>
+                <div class="clues-sections">
+                    <div class="horizontal-clues">
+                        <h4>Horizontal:</h4>
+                        <ul class="clue-list" id="horizontalClues">
+                            <!-- Horizontal clues will be loaded here -->
+                        </ul>
+                    </div>
+                    <div class="vertical-clues">
+                        <h4>Vertical:</h4>
+                        <ul class="clue-list" id="verticalClues">
+                            <!-- Vertical clues will be loaded here -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="progress">
+                    <span id="foundCount">0</span> de <span id="totalCount">0</span> completadas
+                </div>
+                
+                <div class="mobile-help">
+                    <small>Toca unha pista ou celda para comezar a escribir<br>
+                    A palabra compróbase automaticamente ao completar<br>
+                    Se duas palabras se cruzan, preme nunha celda que non compartan</small>
+                </div>
+                
+                <div class="game-controls">
+                    <button class="btn-control" id="btnReiniciar" onclick="restartLevel()">Reiniciar nivel</button>
+                    <button class="btn-control" id="btnCambiar" onclick="showLevelSelector()">Cambiar nivel</button>
+                    <button class="btn-control" id="btnRanking" onclick="showRanking()">Ver ranking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANNER CTA AQUÍ -->
+    <div class="cta-banner">
+        <div class="cta-content">
+            <img src="img/logotipo-horizontal-verde.png" alt="CURSOS.GAL" class="cta-logo">
+            <div class="cta-text">
+                <h3>Queres aprender galego?</h3>
+                <p>Descubre os nosos cursos de galego online. Comeza agora!</p>
+            </div>
+            <a href="https://cursos.gal" class="cta-button" target="_blank">Ir a CURSOS.GAL</a>
+        </div>
+    </div>
+
+    <!-- Modal Selector de Nivel -->
+    <div class="modal" id="levelModal" style="display: none;">
+        <div class="modal-content">
+            <h3>Selecciona o nivel</h3>
+            <div class="level-buttons" id="levelButtons">
+                <!-- Level buttons will be generated here -->
+            </div>
+            <button class="btn-close" onclick="closeLevelModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal Puntuación SIMPLE (só nome) -->
+    <div class="modal" id="scoreModal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="scoreTitle">¡Nivel completado!</h3>
+            <p id="scoreMessage">Puntuación: <span id="finalScore">0</span></p>
+            
+            <div id="nameInput">
+                <label for="playerName">Introduce o teu nome para gardar a puntuación:</label>
+                <input type="text" id="playerName" placeholder="O teu nome" maxlength="20">
+                <div class="form-buttons">
+                    <button type="button" class="btn-primary" onclick="saveScore()">Gardar puntuación</button>
+                    <button type="button" class="btn-secondary" onclick="skipSaveScore()">Continuar sen gardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ranking -->
+    <div class="modal" id="rankingModal" style="display: none;">
+        <div class="modal-content ranking-modal">
+            <h3>Mellores Puntuacións</h3>
+            <div class="ranking-tabs">
+                <button class="tab-btn active" onclick="showRankingTab('global')">Global</button>
+                <button class="tab-btn" onclick="showRankingTab('nivel1')">Nivel 1</button>
+                <button class="tab-btn" onclick="showRankingTab('nivel2')">Nivel 2</button>
+                <button class="tab-btn" onclick="showRankingTab('nivel3')">Nivel 3</button>
+            </div>
+            <div class="ranking-content" id="rankingContent">
+                <div class="loading">Cargando ranking...</div>
+            </div>
+            <button class="btn-close" onclick="closeRankingModal()">Pechar</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 CURSOS.GAL - Aprende galego xogando</p>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
