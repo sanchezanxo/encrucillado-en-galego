@@ -2,8 +2,8 @@
 
 Un xogo educativo de encrucillado deseñado especialmente para persoas que aprenden galego. Baséase na arquitectura do proxecto sopa de letras existente e ofrece unha experiencia de aprendizaxe gamificada.
 
-**🎮 Xogar Online**: [https://encrucillado.cursos.gal/](https://encrucillado.cursos.gal/)  
-**📂 Repositorio**: [https://github.com/sanchezanxo/encrucillado-en-galego](https://github.com/sanchezanxo/encrucillado-en-galego)
+**Xogar Online**: [https://encrucillado.cursos.gal/](https://encrucillado.cursos.gal/)  
+**Repositorio**: [https://github.com/sanchezanxo/encrucillado-en-galego](https://github.com/sanchezanxo/encrucillado-en-galego)
 
 **Desenvolto por**: Anxo Sánchez (@sanchezanxo) para cursos.gal  
 **Ferramentas**: Claude Code e VS Code  
@@ -11,26 +11,26 @@ Un xogo educativo de encrucillado deseñado especialmente para persoas que apren
 
 ## Opcións de Uso
 
-- **🌐 Xogar Online**: accede directamente a [https://encrucillado.cursos.gal/](https://encrucillado.cursos.gal/)
-- **💾 Descargar e Instalar**: descarga este repositorio e instálao no teu hosting
+- **Xogar Online**: accede directamente a [https://encrucillado.cursos.gal/](https://encrucillado.cursos.gal/)
+- **Descargar e Instalar**: descarga este repositorio e instálao no teu hosting
 
 ## Características
 
 ### Xogo Principal
 - **Encrucillado dinámico**: xeración automática de encrucillados con palabras galegas
-- **Tres niveis de dificultade**: fácil (6 palabras), medio (9 palabras), difícil (13 palabras)
+- **Tres niveis de dificultade**: sinxelo (6 palabras), medio (9 palabras), difícil (13 palabras)
 - **Temporizador**: límite de tempo diferente para cada nivel (300s, 240s, 180s)
 - **Sistema de puntuación**: 10 puntos por letra + bonus de tempo
 - **Responsive**: optimizado para PC, tablet e móbil
 
 ### Contido Educativo
-- **Palabras galegas**: vocabulario relacionado con cultura, xeografía e tradicións galegas
+- **Palabras**: unhas poucas bastante sinxelas
 - **Definicións**: cada palabra inclúe a súa definición como pista
 - **Aprendizaxe progresiva**: dificultade escalonada por niveis
 
 ### Tecnoloxías
-- **Frontend**: HTML5, CSS3, JavaScript vanilla
-- **Backend**: PHP (XAMPP)
+- **Frontend**: HTML5, CSS3, JavaScript vanilla (éche o que hai xd)
+- **Backend**: PHP
 - **Base de datos**: Sistema baseado en arquivos JSON
 - **Deseño**: Mobile-first, CSS Grid
 
@@ -38,7 +38,7 @@ Un xogo educativo de encrucillado deseñado especialmente para persoas que apren
 
 ### Para Instalar no Teu Hosting
 1. Descarga ou clona este repositorio
-2. Sube os arquivos ao teu servidor web (Apache + PHP)
+2. Sube os arquivos ao teu servidor web (Apache, NGINX ou similar)
 3. Configura os permisos do directorio `private/`
 4. Accede ao teu dominio para xogar
 
@@ -50,9 +50,9 @@ Un xogo educativo de encrucillado deseñado especialmente para persoas que apren
 3. Configura os permisos do directorio `private/`
 
 ### Arquivos de Datos
-- `data/palabras.json`: Contén todas as palabras con definicións
-- `private/scores.json`: Almacena as puntuacións (créase automaticamente)
-- `private/rate_limit.json`: Control de límites de peticions
+- `data/palabras.json`: contén todas as palabras con definicións
+- `private/scores.json`: almacena as puntuacións (créase automaticamente)
+- `private/rate_limit.json`: control de límites de peticions
 
 ## Estrutura do Proxecto
 
@@ -73,14 +73,14 @@ encrucillado2/
 │   ├── get_stats.php     # Obtención de estatísticas
 │   ├── config.php        # Configuración de seguridade
 │   └── *.json           # Arquivos de datos
-└── assets/              # Recursos adicionais
+└── assets/              # Recursos adicionais que se engadirán a futuro (comentario o día 06/09/2025)
 ```
 
 ## Como Xogar
 
 1. **Seleccionar Nivel**: escolle entre Fácil, Medio ou Difícil
 2. **Ler Pistas**: consulta as definicións nas listas "Horizontais" e "Verticais"
-3. **Clickar Celda**: fai clic nunha celda para seleccionar unha palabra
+3. **Premer Celda**: fai clic nunha celda para seleccionar unha palabra. Se hai palabras que comparten cela, mellor preme nunha que non se comparta
 4. **Escribir Resposta**: usa o teclado para introducir a palabra
 5. **Verificación**: preme Enter para verificar ou a palabra complétase automaticamente
 6. **Completar**: atopa todas as palabras antes de que se acabe o tempo
@@ -101,7 +101,7 @@ encrucillado2/
 ## Administración
 
 ### Panel de Administración
-Acceso: `http://localhost/encrucillado2/private/admin.php`
+Acceso: `http://O-TEU-DOMINIO.com/private/admin.php`
 
 Funcionalidades:
 - Ver estatísticas de xogo
@@ -141,11 +141,11 @@ Modifica `data/config.json` para cambiar dificultades:
 ## Desenvolvemento
 
 ### Arquitectura do Código
-- **Configuración central**: Obxecto `CONFIG` para axustes
-- **Estado do xogo**: Obxecto `gameState` para xestión do estado
-- **Programación defensiva**: Try-catch e validacións
-- **Optimización móbil**: Teclado virtual sen scroll
-- **Variables CSS**: Tema centralizado e mantemento fácil
+- **Configuración central**: obxecto `CONFIG` para axustes
+- **Estado do xogo**: obxecto `gameState` para xestión do estado
+- **Programación defensiva**: try-catch e validacións
+- **Optimización móbil**: teclado virtual sen scroll
+- **Variables CSS**: tema centralizado e mantemento fácil
 
 ### Funcións Principais
 - `generateCrossword()`: xeración do encrucillado
@@ -198,8 +198,8 @@ Proxecto educativo de código aberto para a promoción da lingua galega.
 ## Soporte
 
 Para problemas técnicos ou suxestións:
-- Comproba os logs do navegador (F12 → Console)
-- Revisa os logs de Apache en XAMPP
+- Comproba os logs do navegador (F12 → Console). Tamén verás a solución, mais non me fagas trampas ehhh!
+- Revisa os logs de Apache
 - Verifica que os arquivos JSON sexan válidos
 - Confirma que o servidor web está en execución
 
@@ -214,12 +214,9 @@ Para problemas técnicos ou suxestións:
 - Algoritmo de xeración optimizado
 
 ### Próximas Melloras
-- Máis palabras galegas
-- Soporte para temas personalizados
-- Modo multixogador
+- Máis palabras
 - Integración con redes sociais
-- Análise de aprendizaxe
 
 ---
 
-**Desenvolvido para promover e ensinar a lingua galega de forma interactiva e divertida.**
+**Desenvolto para promover e ensinar a lingua galega de forma interactiva e divertida.**
