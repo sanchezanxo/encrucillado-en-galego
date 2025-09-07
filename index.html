@@ -76,6 +76,7 @@
     <!-- Modal Selector de Nivel -->
     <div class="modal" id="levelModal" style="display: none;">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeLevelModal()">&times;</button>
             <h3>Selecciona o nivel</h3>
             <div class="level-buttons" id="levelButtons">
                 <!-- Level buttons will be generated here -->
@@ -87,8 +88,15 @@
     <!-- Modal Puntuación SIMPLE (só nome) -->
     <div class="modal" id="scoreModal" style="display: none;">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeScoreModal()">&times;</button>
             <h3 id="scoreTitle">¡Nivel completado!</h3>
             <p id="scoreMessage">Puntuación: <span id="finalScore">0</span></p>
+            
+            <div class="share-section" id="shareSection">
+                <button type="button" class="btn-share" onclick="shareScore()" title="Compartir puntuación">
+                    📱 Compartir puntuación
+                </button>
+            </div>
             
             <div id="nameInput">
                 <label for="playerName">Introduce o teu nome para gardar a puntuación:</label>
@@ -104,13 +112,8 @@
     <!-- Modal Ranking -->
     <div class="modal" id="rankingModal" style="display: none;">
         <div class="modal-content ranking-modal">
-            <h3>Mellores Puntuacións</h3>
-            <div class="ranking-tabs">
-                <button class="tab-btn active" onclick="showRankingTab('global')">Global</button>
-                <button class="tab-btn" onclick="showRankingTab('nivel1')">Nivel 1</button>
-                <button class="tab-btn" onclick="showRankingTab('nivel2')">Nivel 2</button>
-                <button class="tab-btn" onclick="showRankingTab('nivel3')">Nivel 3</button>
-            </div>
+            <button class="modal-close" onclick="closeRankingModal()">&times;</button>
+            <h3>Mellores Puntuacións Globais</h3>
             <div class="ranking-content" id="rankingContent">
                 <div class="loading">Cargando ranking...</div>
             </div>

@@ -17,9 +17,9 @@ const CONFIG = {
     POINTS_PER_LETTER: 10,
     TIME_BONUS: 5,
     LEVELS: [
-        {id: 1, palabras: 6, tempo: 300, tema: "Fácil"},
-        {id: 2, palabras: 9, tempo: 240, tema: "Medio"},
-        {id: 3, palabras: 13, tempo: 180, tema: "Difícil"}
+        {id: 1, palabras: 6, tempo: 180, tema: "Fácil"},      // 3 min inicial
+        {id: 2, palabras: 9, tempo: 120, tema: "Medio"},      // +2 min extra (máx 5 min)
+        {id: 3, palabras: 13, tempo: 90, tema: "Difícil"}     // +1.5 min extra (máx 6.5 min)
     ]
 };
 
@@ -29,7 +29,9 @@ let gameState = {
     words: [],
     placedWords: [],
     foundWords: [],
-    score: 0,
+    score: 0,                    // Score for current level
+    totalScore: 0,               // Accumulated score across all levels
+    completedLevels: [],         // Array of completed level numbers
     currentLevel: 1,
     timeRemaining: null,
     timerInterval: null,
@@ -88,9 +90,17 @@ async function loadWordsForLevel(level) {
         
         // Select random words from the filtered list
         gameState.words = selectRandomWords(filteredWords, levelConfig.palabras);
-        gameState.timeRemaining = levelConfig.tempo;
         
-        console.log(`Nivel ${level} cargado:`, gameState.words);
+        // Implement cumulative time system
+        if (gameState.currentLevel === 1) {
+            // First level: use base time
+            gameState.timeRemaining = levelConfig.tempo;
+        } else {
+            // Subsequent levels: add extra time to remaining time
+            gameState.timeRemaining = (gameState.timeRemaining || 0) + levelConfig.tempo;
+        }
+        
+        console.log(`Nivel ${level} cargado con ${gameState.words.length} palabras`);
         updateCluesList();
         
         // Start timer if level has time limit
@@ -382,7 +392,11 @@ function updateUI() {
     const levelConfig = CONFIG.LEVELS.find(l => l.id === gameState.currentLevel);
     
     if (levelInfo && levelConfig) {
-        levelInfo.textContent = `Nivel ${gameState.currentLevel} - ${levelConfig.tema}`;
+        // Show current level and completed levels info
+        const completedText = gameState.completedLevels.length > 0 
+            ? ` | Completados: ${gameState.completedLevels.join(', ')}`
+            : '';
+        levelInfo.textContent = `Nivel ${gameState.currentLevel} - ${levelConfig.tema}${completedText}`;
     }
     
     updateScoreDisplay();
@@ -399,7 +413,9 @@ function showError(message) {
 function updateScoreDisplay() {
     const scoreElement = document.getElementById('score');
     if (scoreElement) {
-        scoreElement.textContent = gameState.score;
+        // Show current level score + total accumulated score
+        const displayScore = gameState.score + gameState.totalScore;
+        scoreElement.textContent = displayScore;
     }
 }
 
@@ -425,8 +441,76 @@ function endGame(completed) {
         updateScoreDisplay();
     }
     
-    // Show score modal
-    showScoreModal(completed, finalScore);
+    // Add current level to completed levels and accumulate score
+    if (completed && !gameState.completedLevels.includes(gameState.currentLevel)) {
+        gameState.completedLevels.push(gameState.currentLevel);
+        gameState.totalScore += gameState.score;
+    }
+    
+    // Check if there are more levels to play
+    const hasMoreLevels = gameState.currentLevel < CONFIG.LEVELS.length;
+    
+    if (completed && hasMoreLevels) {
+        // Auto-advance to next level without modal
+        console.log('Nivel completado! Avanzando automaticamente...');
+        setTimeout(() => {
+            nextLevel();
+        }, 1500); // Show completion message briefly
+        
+        // Show brief success message instead of modal
+        showLevelCompletedMessage();
+        
+    } else {
+        // Show score modal only at the end or when losing
+        const totalFinalScore = gameState.totalScore;
+        showScoreModal(completed, totalFinalScore);
+    }
+}
+
+// Level completion functions - Funcións de finalización de nivel
+
+// Mostra unha mensaxe breve de nivel completado
+function showLevelCompletedMessage() {
+    const message = document.createElement('div');
+    message.id = 'levelCompleteMessage';
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--color-primary);
+        color: white;
+        padding: 20px 30px;
+        border-radius: var(--border-radius);
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        z-index: 2000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+    
+    const timeMinutes = Math.floor(gameState.timeRemaining / 60);
+    const timeSeconds = gameState.timeRemaining % 60;
+    const timeDisplay = `${timeMinutes}:${timeSeconds.toString().padStart(2, '0')}`;
+    
+    message.innerHTML = `
+        <div>¡Nivel ${gameState.currentLevel} completado!</div>
+        <div style="font-size: 0.9rem; margin-top: 8px; opacity: 0.9;">
+            Puntuación total: ${gameState.totalScore} puntos
+        </div>
+        <div style="font-size: 0.8rem; margin-top: 8px; opacity: 0.8;">
+            Tempo restante: ${timeDisplay} | Avanzando...
+        </div>
+    `;
+    
+    document.body.appendChild(message);
+    
+    // Remove message after 1.3 seconds
+    setTimeout(() => {
+        if (document.getElementById('levelCompleteMessage')) {
+            document.body.removeChild(message);
+        }
+    }, 1300);
 }
 
 // Score modal functions - Funcións do modal de puntuación
@@ -469,10 +553,11 @@ async function saveScore() {
     const scoreData = {
         name: playerName,
         email: '', // Not needed anymore
-        level: gameState.currentLevel,
-        score: gameState.score,
+        level: Math.max(...gameState.completedLevels) || gameState.currentLevel,  // Highest completed level
+        score: gameState.totalScore,  // Save total accumulated score
         foundWords: gameState.foundWords.length,
         totalWords: gameState.words.length,
+        completedLevels: gameState.completedLevels,
         timestamp: new Date().toISOString()
     };
     
@@ -486,14 +571,12 @@ async function saveScore() {
         // Show ranking after saving
         setTimeout(() => showRanking(), 500);
         
-        // Auto-advance after showing ranking if more levels available
-        if (gameState.currentLevel < CONFIG.LEVELS.length) {
-            setTimeout(() => {
-                if (confirm('¿Queres continuar ao seguinte nivel?')) {
-                    nextLevel();
-                }
-            }, 2000);
-        }
+        // Offer to restart game
+        setTimeout(() => {
+            if (confirm('¿Queres xogar de novo?')) {
+                restartGame();
+            }
+        }, 2000);
         
     } catch (error) {
         console.error('Error gardando puntuación:', error);
@@ -502,27 +585,26 @@ async function saveScore() {
     }
 }
 
-// Omite gardar a puntuación e avanza ao seguinte nivel
+// Omite gardar a puntuación e reinicia o xogo
 function skipSaveScore() {
     closeScoreModal();
     
-    // Auto-advance to next level if available
-    if (gameState.currentLevel < CONFIG.LEVELS.length) {
-        console.log('Avanzando automaticamente ao seguinte nivel...');
-        setTimeout(() => nextLevel(), 500);
-    } else {
-        alert('¡Completaches todos os niveis!\n¡Parabéns!');
-        setTimeout(() => restartGame(), 1000);
-    }
+    // Offer to restart game
+    setTimeout(() => {
+        if (confirm('¿Queres xogar de novo?')) {
+            restartGame();
+        }
+    }, 500);
 }
 
 // Avanza ao seguinte nivel se está dispoñible
 async function nextLevel() {
     if (gameState.currentLevel < CONFIG.LEVELS.length) {
+        // Score accumulation is handled in endGame()
         gameState.currentLevel++;
         gameState.foundWords = [];
         gameState.isGameActive = true;
-        gameState.score = 0;
+        gameState.score = 0;  // Reset current level score, but keep totalScore
         stopTimer();
         clearSelection();
         
@@ -537,6 +619,7 @@ async function restartLevel() {
     gameState.foundWords = [];
     gameState.isGameActive = true;
     gameState.score = 0;
+    // Keep cumulative time and totalScore when restarting level
     stopTimer();
     clearSelection();
     
@@ -549,6 +632,8 @@ async function restartLevel() {
 async function restartGame() {
     gameState.currentLevel = 1;
     gameState.score = 0;
+    gameState.totalScore = 0;
+    gameState.completedLevels = [];
     gameState.foundWords = [];
     gameState.isGameActive = true;
     stopTimer();
@@ -630,10 +715,11 @@ async function savePlayerData(playerData) {
         }
         
         const result = await response.json();
-        console.log('Datos gardados no servidor:', result);
+        // Score saved successfully
         
     } catch (error) {
         console.error('Error gardando no servidor:', error);
+        console.info('💡 Asegúrate de que XAMPP está executándose e o PHP funciona');
         throw error; // Re-throw to handle in calling function
     }
 }
@@ -646,7 +732,7 @@ async function showRanking() {
     const modal = document.getElementById('rankingModal');
     if (modal) {
         modal.style.display = 'flex';
-        await loadRankingData('global');
+        await loadRankingData();
     }
 }
 
@@ -658,18 +744,8 @@ function closeRankingModal() {
     }
 }
 
-// Cambia entre as pestanas do ranking (global ou por nivel)
-async function showRankingTab(tab) {
-    // Update tab buttons
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    // Load ranking data
-    await loadRankingData(tab);
-}
-
 // Carga os datos do ranking dende o servidor
-async function loadRankingData(type = 'global') {
+async function loadRankingData() {
     const content = document.getElementById('rankingContent');
     if (!content) return;
     
@@ -680,18 +756,15 @@ async function loadRankingData(type = 'global') {
         let rankingData = await loadServerRanking();
         
         if (!rankingData) {
-            console.log('Servidor non dispoñible');
-            displayRanking(null, type, content);
+            displayRanking(null, content);
             return;
-        } else {
-            console.log('Datos cargados do servidor');
         }
         
-        displayRanking(rankingData, type, content);
+        displayRanking(rankingData, content);
         
     } catch (error) {
         console.error('Error loading ranking:', error);
-        displayRanking(null, type, content);
+        displayRanking(null, content);
     }
 }
 
@@ -699,55 +772,54 @@ async function loadRankingData(type = 'global') {
 async function loadServerRanking() {
     try {
         const response = await fetch('private/get_stats.php');
-        if (!response.ok) throw new Error('Server error');
+        if (!response.ok) {
+            console.warn(`Erro do servidor: ${response.status} ${response.statusText}`);
+            return null;
+        }
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            console.warn('O servidor non devolveu JSON:', contentType);
+            return null;
+        }
         
         const stats = await response.json();
         return stats;
+        
     } catch (error) {
         console.warn('Non se puido cargar ranking do servidor:', error);
+        console.info('💡 Asegúrate de que XAMPP está executándose e o PHP funciona');
         return null;
     }
 }
 
 
 // Mostra o ranking na interfaz
-function displayRanking(data, type, container) {
+function displayRanking(data, container) {
     if (!data || !data.topScores) {
         container.innerHTML = '<div class="no-data">Sen datos de ranking</div>';
         return;
     }
     
-    const scores = processRankingScores(data.topScores, type);
-    if (!scores) {
-        const level = parseInt(type.replace('nivel', ''));
-        container.innerHTML = `<div class="no-data">Sen puntuacións para o nivel ${level}<br><small>Xoga este nivel para aparecer aquí!</small></div>`;
+    const scores = data.topScores
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+    
+    if (scores.length === 0) {
+        container.innerHTML = '<div class="no-data">Sen puntuacións<br><small>¡Xoga para aparecer aquí!</small></div>';
         return;
     }
     
-    const html = buildRankingHTML(scores, data, type);
+    const html = buildRankingHTML(scores, data);
     container.innerHTML = html;
 }
 
-// Procesa e filtra as puntuacións segundo o tipo de ranking
-function processRankingScores(topScores, type) {
-    if (type !== 'global') {
-        const level = parseInt(type.replace('nivel', ''));
-        const filtered = topScores
-            .filter(score => score.level === level)
-            .slice(0, 10);
-        return filtered.length > 0 ? filtered : null;
-    }
-    
-    return topScores
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10);
-}
-
 // Constrúe o HTML do ranking
-function buildRankingHTML(scores, data, type) {
+function buildRankingHTML(scores, data) {
     let html = '';
     
-    if (type === 'global' && data.totalGames) {
+    if (data.totalGames) {
         html += buildStatsHTML(data);
     }
     
@@ -784,18 +856,168 @@ function buildScoreItemHTML(score, index) {
     const position = index + 1;
     const medal = position <= 3 ? `#${position}` : '';
     
+    // Show completed levels if available
+    const levelsInfo = score.completedLevels 
+        ? `Niveis ${score.completedLevels.join(', ')}`
+        : `Nivel ${score.level}`;
+    
     return `
         <li class="ranking-item ${isTop3 ? 'top-3' : ''}">
             <div class="ranking-position">${medal || position}</div>
             <div class="ranking-info">
                 <div class="ranking-name">${score.name || 'Anónimo'}</div>
                 <div class="ranking-details">
-                    Nivel ${score.level} • ${score.date}
+                    ${levelsInfo} • ${score.date}
                 </div>
             </div>
             <div class="ranking-score">${score.score}</div>
         </li>
     `;
+}
+
+// Social sharing functions - Funcións de compartir en RRSS
+
+// Comparte a puntuación final nas redes sociais
+async function shareScore() {
+    const finalScore = gameState.totalScore;
+    const completedLevels = gameState.completedLevels.length;
+    const maxLevels = CONFIG.LEVELS.length;
+    
+    // Create share message
+    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
+📊 Puntuación total: ${finalScore} puntos
+🏆 Aprende galego xogando!
+
+Xoga ti tamén: https://encrucillado.cursos.gal
+
+#GalegoXogo #AprendeGalego #CURSOSGAL`;
+    
+    // Try Web Share API first (mobile native)
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Encrucillado Galego - A miña puntuación',
+                text: message,
+                url: 'https://encrucillado.cursos.gal'
+            });
+            console.log('Compartido con éxito');
+            return;
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.warn('Error coa Web Share API:', error);
+            }
+            // Fall through to manual sharing
+        }
+    }
+    
+    // Fallback: show manual sharing options
+    showSharingOptions(message);
+}
+
+// Mostra opcións de compartir manuais
+function showSharingOptions(message) {
+    const encodedMessage = encodeURIComponent(message);
+    const url = 'https://encrucillado.cursos.gal';
+    const encodedUrl = encodeURIComponent(url);
+    
+    const options = [
+        {
+            name: 'Twitter',
+            icon: '🐦',
+            url: `https://twitter.com/intent/tweet?text=${encodedMessage}`
+        },
+        {
+            name: 'Facebook',
+            icon: '👥', 
+            url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedMessage}`
+        },
+        {
+            name: 'WhatsApp',
+            icon: '💬',
+            url: `https://wa.me/?text=${encodedMessage}`
+        },
+        {
+            name: 'Copiar texto',
+            icon: '📋',
+            action: () => copyToClipboard(message)
+        }
+    ];
+    
+    const modal = createSharingModal(options);
+    document.body.appendChild(modal);
+}
+
+// Crea o modal de opcións de compartir
+function createSharingModal(options) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'sharingModal';
+    modal.style.cssText = 'display: flex; z-index: 3000;';
+    
+    const content = document.createElement('div');
+    content.className = 'modal-content';
+    content.style.cssText = 'max-width: 400px; text-align: center;';
+    
+    content.innerHTML = `
+        <button class="modal-close" onclick="closeSharingModal()">&times;</button>
+        <h3>Compartir puntuación</h3>
+        <div class="sharing-options">
+            ${options.map(option => `
+                <button class="sharing-btn" onclick="${option.action ? 'copyScoreMessage()' : `window.open('${option.url}', '_blank')`}">
+                    <span class="sharing-icon">${option.icon}</span>
+                    <span class="sharing-name">${option.name}</span>
+                </button>
+            `).join('')}
+        </div>
+    `;
+    
+    modal.appendChild(content);
+    return modal;
+}
+
+// Copia a mensaxe ao portapapeis
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        alert('¡Mensaxe copiada ao portapapeis!');
+        closeSharingModal();
+    } catch (error) {
+        console.warn('Error copiando ao portapapeis:', error);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('¡Mensaxe copiada!');
+        closeSharingModal();
+    }
+}
+
+// Function accessible from HTML
+function copyScoreMessage() {
+    const finalScore = gameState.totalScore;
+    const completedLevels = gameState.completedLevels.length;
+    const maxLevels = CONFIG.LEVELS.length;
+    
+    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
+📊 Puntuación total: ${finalScore} puntos
+🏆 Aprende galego xogando!
+
+Xoga ti tamén: https://encrucillado.cursos.gal
+
+#GalegoXogo #AprendeGalego #CURSOSGAL`;
+    
+    copyToClipboard(message);
+}
+
+// Pecha o modal de compartir
+function closeSharingModal() {
+    const modal = document.getElementById('sharingModal');
+    if (modal) {
+        document.body.removeChild(modal);
+    }
 }
 
 // Mobile keyboard support - Soporte para teclado en dispositivos móbiles

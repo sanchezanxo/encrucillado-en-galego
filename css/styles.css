@@ -390,6 +390,33 @@ body {
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: var(--color-surface-light);
+    color: var(--color-text-dark);
+    transform: scale(1.1);
 }
 
 .modal-content h3 {
@@ -489,6 +516,67 @@ body {
 
 .btn-secondary:hover {
     background: var(--color-button-secondary-hover);
+}
+
+.share-section {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.btn-share {
+    background: linear-gradient(135deg, #1da1f2, #1991db);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--border-radius-medium);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(29, 161, 242, 0.3);
+}
+
+.btn-share:hover {
+    background: linear-gradient(135deg, #1991db, #1770a6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+}
+
+.sharing-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.sharing-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 10px;
+    border: 2px solid var(--color-border-light);
+    border-radius: var(--border-radius-medium);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--color-text-primary);
+}
+
+.sharing-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface-hover);
+    transform: translateY(-2px);
+}
+
+.sharing-icon {
+    font-size: 1.5rem;
+}
+
+.sharing-name {
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 /* RANKING MODAL */

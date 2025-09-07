@@ -39,7 +39,7 @@ function generateCrossword() {
         }
     }
     
-    console.log(`Colocadas ${placedCount} palabras de ${sortedWords.length}`);
+    console.log(`Xerando crucigrama: ${placedCount} palabras colocadas`);
     
     // Update game words to only include placed words
     gameState.words = gameState.placedWords.map(pw => ({
@@ -248,7 +248,7 @@ function placeWordInCrossword(wordObj, row, col, direction, number, gridSize) {
         cells: generateWordCells(row, col, word.length, direction)
     });
     
-    console.log(`Colocada palabra "${word}" en (${row},${col}) ${direction} - número ${number}`);
+    // Word placed successfully
 }
 
 // Xera as posicións das celdas para unha palabra
@@ -391,7 +391,7 @@ function selectWord(placedWord) {
         clueElement.classList.add('active');
     }
     
-    console.log('Selected word:', placedWord.word.palabra);
+    // Word selected for input
     
     // Mobile keyboard will be shown when user starts typing to avoid scroll
 }

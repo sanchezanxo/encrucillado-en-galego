@@ -19,12 +19,12 @@ Un xogo educativo de encrucillado deseñado especialmente para persoas que apren
 ### Xogo Principal
 - **Encrucillado dinámico**: xeración automática de encrucillados con palabras galegas
 - **Tres niveis de dificultade**: sinxelo (6 palabras), medio (9 palabras), difícil (13 palabras)
-- **Temporizador**: límite de tempo diferente para cada nivel (300s, 240s, 180s)
-- **Sistema de puntuación**: 10 puntos por letra + bonus de tempo
+- **Temporizador acumulativo**: 3min inicial + tempo extra (total máx 6.5min)
+- **Sistema de puntuación global**: puntuación acumulativa entre niveis
 - **Responsive**: optimizado para PC, tablet e móbil
 
 ### Contido Educativo
-- **Palabras**: unhas poucas bastante sinxelas
+- **Palabras**: 900+ palabras galegas clasificadas
 - **Definicións**: cada palabra inclúe a súa definición como pista
 - **Aprendizaxe progresiva**: dificultade escalonada por niveis
 
@@ -83,7 +83,7 @@ encrucillado2/
 3. **Premer Celda**: fai clic nunha celda para seleccionar unha palabra. Se hai palabras que comparten cela, mellor preme nunha que non se comparta
 4. **Escribir Resposta**: usa o teclado para introducir a palabra
 5. **Verificación**: preme Enter para verificar ou a palabra complétase automaticamente
-6. **Completar**: atopa todas as palabras antes de que se acabe o tempo
+6. **Completar**: atopa todas as palabras. O tempo acumúlase entre niveis
 
 ### Controis
 - **PC**: Teclado estándar + clic do rato
@@ -131,9 +131,9 @@ Modifica `data/config.json` para cambiar dificultades:
 ```json
 {
   "niveis": [
-    {"id": 1, "palabras": 6, "tempo": 300, "tema": "Fácil"},
-    {"id": 2, "palabras": 9, "tempo": 240, "tema": "Medio"},
-    {"id": 3, "palabras": 13, "tempo": 180, "tema": "Difícil"}
+    {"id": 1, "palabras": 6, "tempo": 180, "tema": "Fácil"},
+    {"id": 2, "palabras": 9, "tempo": 120, "tema": "Medio"},
+    {"id": 3, "palabras": 13, "tempo": 90, "tema": "Difícil"}
   ]
 }
 ```
@@ -205,13 +205,12 @@ Para problemas técnicos ou suxestións:
 
 ## Notas de Versión
 
-### v2.0.0 (Actual)
-- Implementación completa do encrucillado
-- Sistema de puntuación e ranking
-- Soporte móbil optimizado
-- Panel de administración seguro
-- Variables CSS e código limpo
-- Algoritmo de xeración optimizado
+### v2.1.0 (Actual)
+- Sistema de puntuación global acumulativa
+- Temporizador acumulativo entre niveis
+- Avance automático sen modals intermedia
+- Consola optimizada para produción
+- Botóns de peche en todos os modais
 
 ### Próximas Melloras
 - Máis palabras
