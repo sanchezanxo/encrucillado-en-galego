@@ -523,23 +523,93 @@ body {
     text-align: center;
 }
 
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
 .btn-share {
-    background: linear-gradient(135deg, #1da1f2, #1991db);
-    color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: var(--border-radius-medium);
-    font-weight: 600;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1rem;
-    box-shadow: 0 2px 8px rgba(29, 161, 242, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.btn-share i {
+    font-size: 1.3rem;
 }
 
 .btn-share:hover {
-    background: linear-gradient(135deg, #1991db, #1770a6);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Cores específicas para cada rede social */
+.btn-share.whatsapp {
+    background: #25d366;
+    box-shadow: 0 3px 8px rgba(37, 211, 102, 0.3);
+}
+.btn-share.whatsapp:hover {
+    background: #1da851;
+    box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+}
+
+.btn-share.telegram {
+    background: #0088cc;
+    box-shadow: 0 3px 8px rgba(0, 136, 204, 0.3);
+}
+.btn-share.telegram:hover {
+    background: #006ba6;
+    box-shadow: 0 6px 16px rgba(0, 136, 204, 0.4);
+}
+
+.btn-share.facebook {
+    background: #1877f2;
+    box-shadow: 0 3px 8px rgba(24, 119, 242, 0.3);
+}
+.btn-share.facebook:hover {
+    background: #145dbf;
+    box-shadow: 0 6px 16px rgba(24, 119, 242, 0.4);
+}
+
+.btn-share.twitter {
+    background: #000000;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+.btn-share.twitter:hover {
+    background: #333333;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-share.bluesky {
+    background: #0085ff;
+    box-shadow: 0 3px 8px rgba(0, 133, 255, 0.3);
+}
+.btn-share.bluesky:hover {
+    background: #006bcc;
+    box-shadow: 0 6px 16px rgba(0, 133, 255, 0.4);
+}
+
+
+@media (max-width: 480px) {
+    .btn-share {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .btn-share i {
+        font-size: 1.1rem;
+    }
 }
 
 .sharing-options {

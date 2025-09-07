@@ -17,7 +17,7 @@ const CONFIG = {
     POINTS_PER_LETTER: 10,
     TIME_BONUS: 5,
     LEVELS: [
-        {id: 1, palabras: 6, tempo: 180, tema: "Fácil"},      // 3 min inicial
+        {id: 1, palabras: 6, tempo: 20, tema: "Fácil"},      // 3 min inicial
         {id: 2, palabras: 9, tempo: 120, tema: "Medio"},      // +2 min extra (máx 5 min)
         {id: 3, palabras: 13, tempo: 90, tema: "Difícil"}     // +1.5 min extra (máx 6.5 min)
     ]
@@ -445,6 +445,9 @@ function endGame(completed) {
     if (completed && !gameState.completedLevels.includes(gameState.currentLevel)) {
         gameState.completedLevels.push(gameState.currentLevel);
         gameState.totalScore += gameState.score;
+    } else if (!completed) {
+        // Even if not completed, accumulate current score for partial games
+        gameState.totalScore += gameState.score;
     }
     
     // Check if there are more levels to play
@@ -553,7 +556,7 @@ async function saveScore() {
     const scoreData = {
         name: playerName,
         email: '', // Not needed anymore
-        level: Math.max(...gameState.completedLevels) || gameState.currentLevel,  // Highest completed level
+        level: gameState.completedLevels.length > 0 ? Math.max(...gameState.completedLevels) : gameState.currentLevel,  // Highest completed level or current
         score: gameState.totalScore,  // Save total accumulated score
         foundWords: gameState.foundWords.length,
         totalWords: gameState.words.length,
@@ -725,6 +728,7 @@ async function savePlayerData(playerData) {
 }
 
 
+
 // Ranking functions - Funcións de xestión do ranking
 
 // Mostra o modal de ranking
@@ -884,13 +888,8 @@ async function shareScore() {
     const maxLevels = CONFIG.LEVELS.length;
     
     // Create share message
-    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
-📊 Puntuación total: ${finalScore} puntos
-🏆 Aprende galego xogando!
-
-Xoga ti tamén: https://encrucillado.cursos.gal
-
-#GalegoXogo #AprendeGalego #CURSOSGAL`;
+    const message = `🎯 Conseguín ${finalScore} puntos no Encrucillado Galego!
+Aprende galego xogando: https://encrucillado.cursos.gal`;
     
     // Try Web Share API first (mobile native)
     if (navigator.share) {
@@ -997,18 +996,7 @@ async function copyToClipboard(text) {
 
 // Function accessible from HTML
 function copyScoreMessage() {
-    const finalScore = gameState.totalScore;
-    const completedLevels = gameState.completedLevels.length;
-    const maxLevels = CONFIG.LEVELS.length;
-    
-    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
-📊 Puntuación total: ${finalScore} puntos
-🏆 Aprende galego xogando!
-
-Xoga ti tamén: https://encrucillado.cursos.gal
-
-#GalegoXogo #AprendeGalego #CURSOSGAL`;
-    
+    const message = getShareMessage();
     copyToClipboard(message);
 }
 
@@ -1019,6 +1007,46 @@ function closeSharingModal() {
         document.body.removeChild(modal);
     }
 }
+
+// Funcións individuais de compartir para cada rede social
+function getShareMessage() {
+    const finalScore = gameState.totalScore;
+    
+    return `🎯 Conseguín ${finalScore} puntos no Encrucillado Galego!
+Aprende galego xogando: https://encrucillado.cursos.gal`;
+}
+
+function shareToWhatsApp() {
+    const message = getShareMessage();
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+}
+
+function shareToTelegram() {
+    const message = getShareMessage();
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://t.me/share/url?url=https://encrucillado.cursos.gal&text=${encodedMessage}`, '_blank');
+}
+
+function shareToFacebook() {
+    const message = getShareMessage();
+    const encodedMessage = encodeURIComponent(message);
+    const encodedUrl = encodeURIComponent('https://encrucillado.cursos.gal');
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedMessage}`, '_blank');
+}
+
+function shareToTwitter() {
+    const message = getShareMessage();
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}`, '_blank');
+}
+
+function shareToBluesky() {
+    const message = getShareMessage();
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://bsky.app/intent/compose?text=${encodedMessage}`, '_blank');
+}
+
 
 // Mobile keyboard support - Soporte para teclado en dispositivos móbiles
 

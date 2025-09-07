@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -93,9 +94,23 @@
             <p id="scoreMessage">Puntuación: <span id="finalScore">0</span></p>
             
             <div class="share-section" id="shareSection">
-                <button type="button" class="btn-share" onclick="shareScore()" title="Compartir puntuación">
-                    📱 Compartir puntuación
-                </button>
+                <div class="share-buttons">
+                    <button type="button" class="btn-share whatsapp" onclick="shareToWhatsApp()" title="Compartir en WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                    <button type="button" class="btn-share telegram" onclick="shareToTelegram()" title="Compartir en Telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                    </button>
+                    <button type="button" class="btn-share facebook" onclick="shareToFacebook()" title="Compartir en Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button type="button" class="btn-share twitter" onclick="shareToTwitter()" title="Compartir en X">
+                        <i class="fab fa-x-twitter"></i>
+                    </button>
+                    <button type="button" class="btn-share bluesky" onclick="shareToBluesky()" title="Compartir en Bluesky">
+                        <i class="fas fa-cloud"></i>
+                    </button>
+                </div>
             </div>
             
             <div id="nameInput">

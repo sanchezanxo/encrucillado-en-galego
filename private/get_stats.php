@@ -42,6 +42,7 @@ try {
                 'score' => $score['score'],
                 'found_words' => $score['found_words'],
                 'total_words' => $score['total_words'],
+                'completedLevels' => $score['completed_levels'] ?? [],
                 'date' => $date->format('d/m/Y')
             ];
         }, array_slice($scores, 0, 50));

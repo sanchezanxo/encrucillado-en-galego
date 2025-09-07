@@ -80,6 +80,12 @@ try {
             throw new Exception('Formato de data inválido');
         }
         
+        // Handle completedLevels array (optional field)
+        $completedLevels = isset($input['completedLevels']) ? $input['completedLevels'] : [];
+        if (!is_array($completedLevels)) {
+            $completedLevels = [];
+        }
+        
         // Rate limiting - máximo 10 puntuacións por IP por hora
         $client_ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         if (!rateLimit($client_ip, 10, 3600)) {
@@ -107,6 +113,7 @@ try {
             'score' => $score,
             'found_words' => $foundWords,
             'total_words' => $totalWords,
+            'completed_levels' => $completedLevels,
             'timestamp' => $timestamp
         ];
         
