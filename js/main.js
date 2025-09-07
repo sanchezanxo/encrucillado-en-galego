@@ -17,9 +17,9 @@ const CONFIG = {
     POINTS_PER_LETTER: 10,
     TIME_BONUS: 5,
     LEVELS: [
-        {id: 1, palabras: 6, tempo: 20, tema: "Fácil"},      // 3 min inicial
+        {id: 1, palabras: 6, tempo: 180, tema: "Fácil"},      // 3 min inicial
         {id: 2, palabras: 9, tempo: 120, tema: "Medio"},      // +2 min extra (máx 5 min)
-        {id: 3, palabras: 13, tempo: 90, tema: "Difícil"}     // +1.5 min extra (máx 6.5 min)
+        {id: 3, palabras: 13, tempo: 60, tema: "Difícil"}     // +1 min extra (máx 6 min)
     ]
 };
 
@@ -445,9 +445,6 @@ function endGame(completed) {
     if (completed && !gameState.completedLevels.includes(gameState.currentLevel)) {
         gameState.completedLevels.push(gameState.currentLevel);
         gameState.totalScore += gameState.score;
-    } else if (!completed) {
-        // Even if not completed, accumulate current score for partial games
-        gameState.totalScore += gameState.score;
     }
     
     // Check if there are more levels to play
@@ -556,7 +553,7 @@ async function saveScore() {
     const scoreData = {
         name: playerName,
         email: '', // Not needed anymore
-        level: gameState.completedLevels.length > 0 ? Math.max(...gameState.completedLevels) : gameState.currentLevel,  // Highest completed level or current
+        level: Math.max(...gameState.completedLevels) || gameState.currentLevel,  // Highest completed level
         score: gameState.totalScore,  // Save total accumulated score
         foundWords: gameState.foundWords.length,
         totalWords: gameState.words.length,
@@ -728,7 +725,6 @@ async function savePlayerData(playerData) {
 }
 
 
-
 // Ranking functions - Funcións de xestión do ranking
 
 // Mostra o modal de ranking
@@ -888,8 +884,13 @@ async function shareScore() {
     const maxLevels = CONFIG.LEVELS.length;
     
     // Create share message
-    const message = `🎯 Conseguín ${finalScore} puntos no Encrucillado Galego!
-Aprende galego xogando: https://encrucillado.cursos.gal`;
+    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
+📊 Puntuación total: ${finalScore} puntos
+🏆 Aprende galego xogando!
+
+Xoga ti tamén: https://encrucillado.cursos.gal
+
+#GalegoXogo #AprendeGalego #CURSOSGAL`;
     
     // Try Web Share API first (mobile native)
     if (navigator.share) {
@@ -996,7 +997,18 @@ async function copyToClipboard(text) {
 
 // Function accessible from HTML
 function copyScoreMessage() {
-    const message = getShareMessage();
+    const finalScore = gameState.totalScore;
+    const completedLevels = gameState.completedLevels.length;
+    const maxLevels = CONFIG.LEVELS.length;
+    
+    const message = `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
+📊 Puntuación total: ${finalScore} puntos
+🏆 Aprende galego xogando!
+
+Xoga ti tamén: https://encrucillado.cursos.gal
+
+#GalegoXogo #AprendeGalego #CURSOSGAL`;
+    
     copyToClipboard(message);
 }
 
@@ -1011,9 +1023,16 @@ function closeSharingModal() {
 // Funcións individuais de compartir para cada rede social
 function getShareMessage() {
     const finalScore = gameState.totalScore;
+    const completedLevels = gameState.completedLevels.length;
+    const maxLevels = CONFIG.LEVELS.length;
     
-    return `🎯 Conseguín ${finalScore} puntos no Encrucillado Galego!
-Aprende galego xogando: https://encrucillado.cursos.gal`;
+    return `🎯 Completei ${completedLevels}/${maxLevels} niveis do Encrucillado Galego!
+📊 Puntuación total: ${finalScore} puntos
+🏆 Aprende galego xogando!
+
+Xoga ti tamén: https://encrucillado.cursos.gal
+
+#GalegoXogo #AprendeGalego #CURSOSGAL`;
 }
 
 function shareToWhatsApp() {
@@ -1047,6 +1066,9 @@ function shareToBluesky() {
     window.open(`https://bsky.app/intent/compose?text=${encodedMessage}`, '_blank');
 }
 
+function shareNative() {
+    shareScore(); // Usa a función nativa existente
+}
 
 // Mobile keyboard support - Soporte para teclado en dispositivos móbiles
 
